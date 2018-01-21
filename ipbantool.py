@@ -2,6 +2,8 @@ import os, urllib2
 ips = os.popen('cut -d" " -f1 /var/log/nginx/access.log | sort | uniq').read()
 ips = ips.split("\n")[:-1]
 
+key = "your-key"
+
 for ip in ips:
     url = "https://www.abuseipdb.com/check/"+ip+"/json?key="+key+"&days=20000";
     hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
@@ -22,4 +24,7 @@ for ip in ips:
 
     if (content != "[]"):
         os.system("fail2ban-client set nginx-http-auth banip "+ip);
+        os.system("fail2ban-client set sshd-ddos banip "+ip);
+        os.system("fail2ban-client set sshd banip "+ip);
+
 
